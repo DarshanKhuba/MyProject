@@ -1,0 +1,66 @@
+package scenario1;
+
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeTest;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import org.apache.poi.xssf.usermodel.*;
+import org.testng.annotations.AfterTest;
+
+public class DataDrivenTest {
+	String fPath = System.getProperty("user.dir") + "\\Excel Files\\userDetail.xlsx";
+	File file;
+	FileInputStream fis;
+	XSSFWorkbook wb;
+	XSSFSheet sheet;
+	XSSFRow row;
+	XSSFCell cell;
+
+	@Test(enabled = false)
+	public void readData() {
+		row = sheet.getRow(0);
+		cell = row.getCell(0);
+
+		System.out.println(cell.getStringCellValue());
+
+		System.out.println(sheet.getRow(0).getCell(1).getStringCellValue());
+		System.out.println(sheet.getRow(0).getCell(2).getStringCellValue());
+	}
+
+	@Test
+	public void readAllData()
+	{
+		int totalRows = sheet.getPhysicalNumberOfRows();
+		int totalCells = sheet.getRow(0).getPhysicalNumberOfCells();
+				
+		for(int i = 0; i < totalRows - 1; i++) {
+			XSSFRow row = sheet.getRow(i + 1); // Getting the row, starting from the second row (index 1)
+			if (row != null) { // Check if the row is not null
+				for (int j = 0; j < totalCells; j++) {
+					if (row.getCell(j) != null) { // Check if the cell is not null
+						switch (row.getCell(j).getCellType()) {
+						case STRING:
+							data[i][j] = row.getCell(j).getStringCellValue();
+							break;
+						case NUMERIC:
+							data[i][j] = row.getCell(j).getNu
+
+	@BeforeTest
+	public void beforeTest() throws IOException {
+		file = new File(fPath);
+		fis = new FileInputStream(file);
+		wb = new XSSFWorkbook(fis);
+		sheet = wb.getSheet("userData");
+
+	}
+
+	@AfterTest
+	public void afterTest() throws IOException {
+		wb.close();
+		fis.close();
+	}
+
+}

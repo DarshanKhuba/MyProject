@@ -1,0 +1,69 @@
+package scenario1;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.testng.annotations.DataProvider;
+
+public class CustomData {
+
+	public XSSFWorkbook wb;
+
+	@DataProvider(name = "userDetails")
+	public Object[][] excelData() {
+		File f1 = new File(System.getProperty("user.dir") + "//testdata//userDetails.xlsx");
+
+		FileInputStream fis;
+		Object arr[][] = null;
+		try {
+			fis = new FileInputStream(f1);
+			wb = new XSSFWorkbook(fis);
+			XSSFSheet sheet = wb.getSheet("userData");
+			// Number of rows
+			int row = sheet.getPhysicalNumberOfRows();
+			int cell = sheet.getRow(0).getPhysicalNumberOfCells();
+
+			arr = new Object[row][cell];
+
+			for (int i = 0; i < totalRows - 1; i++) {
+				XSSFRow row = sheet.getRow(i + 1); // Getting the row, starting from the second row (index 1)
+				if (row != null) { // Check if the row is not null
+					for (int j = 0; j < totalCells; j++) {
+						if (row.getCell(j) != null) { // Check if the cell is not null
+							switch (row.getCell(j).getCellType()) {
+							case STRING:
+								data[i][j] = row.getCell(j).getStringCellValue();
+								break;
+							case NUMERIC:
+								data[i][j] = row.getCell(j).getNumericCellValue();
+								break;
+							default:
+								data[i][j] = ""; // Handle other types like BOOLEAN, BLANK, etc.
+							}
+						} else {
+							data[i][j] = ""; // Handle missing cells
+						}
+					}
+				} else {
+					for (int j = 0; j < totalCells; j++) {
+						data[i][j] = ""; // If the row is null, fill with empty strings
+					}
+				}
+			}
+			return data;
+		}
+
+		private void initializeSheet() throws IOException {
+			if (sheet == null) { // Ensure sheet is only initialized once
+				File file = new File(filePath);
+				FileInputStream fis = new FileInputStream(file);
+				wb = new XSSFWorkbook(fis);
+				sheet = wb.getSheet("userdata");
+				fis.close();
+			}
+		}
+	}

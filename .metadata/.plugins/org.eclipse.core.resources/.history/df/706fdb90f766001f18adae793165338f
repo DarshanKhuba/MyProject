@@ -1,0 +1,9 @@
+package Listeners;
+
+import org.testng.annotations.Test;
+
+public class ExtentListener {
+  @Test
+  public void f() {
+  }
+}
